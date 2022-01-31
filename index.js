@@ -1,24 +1,17 @@
 'use strict';
-const request = require('request');
+const axios = require('axios');
 
 const makeRequest = url => {
   return new Promise((resolve, reject) => {
-    const options = {
-      url: `https://www.mvg.de/api/fahrinfo${url}`,
-      headers: {'X-MVG-Authorization-Key': '5af1beca494712ed38d313714d4caff6'}
-    };
+    try {
+      const {data} = axios.get(`https://www.mvg.de/api/fahrinfo${url}`, {
+        headers: {'X-MVG-Authorization-Key': '5af1beca494712ed38d313714d4caff6'}
+      });
 
-    request(options, (err, response, body) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      try {
-        resolve(JSON.parse(body));
-      } catch {
-        resolve(null);
-      }
-    });
+      resolve(data);
+    } catch (e) {
+      reject(e);
+    }
   });
 };
 
